@@ -2,11 +2,14 @@ package com.luv2code.springboot.demo.mycoolapp.db.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "student")
 public class Student {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
   private int id;
 
   public Student() {}
@@ -22,7 +25,9 @@ public class Student {
     return id;
   }
 
-  public void setId(int id) {}
+  public void setId(int id) {
+    this.id = id;
+  }
 
   @Column(name = "first_name")
   private String firstName;
@@ -55,6 +60,19 @@ public class Student {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Student student = (Student) o;
+    return id == student.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 
   @Override
