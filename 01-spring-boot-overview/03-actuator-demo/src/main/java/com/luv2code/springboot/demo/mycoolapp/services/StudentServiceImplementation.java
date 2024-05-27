@@ -1,6 +1,6 @@
 package com.luv2code.springboot.demo.mycoolapp.services;
 
-import com.luv2code.springboot.demo.mycoolapp.db.daos.StudentDAO;
+import com.luv2code.springboot.demo.mycoolapp.db.daos.StudentRepository;
 import com.luv2code.springboot.demo.mycoolapp.db.entities.Student;
 import com.luv2code.springboot.demo.mycoolapp.exceptions.NegativeStudentIdException;
 import com.luv2code.springboot.demo.mycoolapp.exceptions.StudentNotFoundException;
@@ -11,32 +11,32 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class StudentServiceImplementation implements StudentService {
-  private StudentDAO studentDAO;
+  private final StudentRepository studentRepository;
 
   @Autowired
-  public StudentServiceImplementation(StudentDAO studentDAO) {
-    this.studentDAO = studentDAO;
+  public StudentServiceImplementation(StudentRepository studentRepository) {
+    this.studentRepository = studentRepository;
   }
 
   @Transactional
   @Override
   public Student save(Student student) {
-    return studentDAO.save(student);
+    return studentRepository.save(student);
   }
 
   @Transactional
   @Override
   public void deleteById(int id) {
-    if(id < 0){
+    if (id < 0) {
       throw new NegativeStudentIdException("Negative student id!");
     }
-    studentDAO.deleteById(id);
+    studentRepository.deleteById(id);
   }
 
   @Override
   public Student getById(int id) {
-    Student s = studentDAO.getById(id);
-    if(s == null){
+    Student s = studentRepository.findById(id).orElse(null);
+    if (s == null) {
       throw new StudentNotFoundException("Student with id " + id + " not found!");
     }
     return s;
@@ -44,6 +44,6 @@ public class StudentServiceImplementation implements StudentService {
 
   @Override
   public List<Student> findAll() {
-    return studentDAO.findAll();
+    return studentRepository.findAll();
   }
 }
